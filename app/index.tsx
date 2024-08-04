@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import OpenAI from 'openai';
 
 const AniPix = () => {
   const [character, setCharacter] = useState('');
@@ -9,13 +10,21 @@ const AniPix = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const openai = new OpenAI({ apiKey: "sk-proj-iViW2Xd0tqtZV5PwWfGxT3BlbkFJ3Uy2pj3eueKQjROHYZmU", dangerouslyAllowBrowser: true});
+
   const handleSubmit = async () => {
     setLoading(true);
-    // Simulating API call
-    setTimeout(() => {
-      setImageUrl('https://via.placeholder.com/300');
-      setLoading(false);
-    }, 2000);
+
+    const response = await openai.images.generate({
+      model: "dall-e-3",
+      prompt: "Draw a pure spritesheet without background, pixel style art, " + character + " , " + action + " , the spritesheet needs to have " + style + " frames of animation, which means drawing the character that amount of times",
+      n: 1,
+      size: "1024x1024",
+    });
+    var urlr = response.data[0]?.url || "";
+    setImageUrl(urlr);
+
+    setLoading(false);
   };
 
   return (
