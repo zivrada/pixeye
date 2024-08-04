@@ -1,137 +1,144 @@
-import React, { useState } from "react";
-import { Text, View, Image, TextInput, StyleSheet, Button, Platform, Pressable, KeyboardAvoidingView, ScrollView } from "react-native";
-import OpenAI from "openai";
+import React, { useState } from 'react';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
-export default function Index() {
-  const [inputText, setInputText] = useState("");
-  const [inputText2, setInputText2] = useState("");
-  const [inputText3, setInputText3] = useState("");
-  const [safeUrlr, setSafeUrlr] = useState("https://oaidalleapiprodscus.blob.core.windows.net/private/org-JymSjHC0q9ksMLuKFQaHrytG/user-0FdHfSSsGmIc7qPTrEd4pOIt/img-eayyspdfBxTSwcPM8NPFjSSJ.png?st=2024-08-04T06%3A42%3A00Z&se=2024-08-04T08%3A42%3A00Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-08-04T00%3A28%3A59Z&ske=2024-08-05T00%3A28%3A59Z&sks=b&skv=2023-11-03&sig=jNqeacmgXXMRPBfjlTLuH5pGb%2BpNFJNvL0mNORrvwdc%3D");
+const AniPix = () => {
+  const [character, setCharacter] = useState('');
+  const [action, setAction] = useState('');
+  const [style, setStyle] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const openai = new OpenAI({ apiKey: "sk-proj-iViW2Xd0tqtZV5PwWfGxT3BlbkFJ3Uy2pj3eueKQjROHYZmU", dangerouslyAllowBrowser: true});
+  const handleSubmit = async () => {
+    setLoading(true);
+    // Simulating API call
+    setTimeout(() => {
+      setImageUrl('https://via.placeholder.com/300');
+      setLoading(false);
+    }, 2000);
+  };
 
   return (
-    <KeyboardAvoidingView
+    <LinearGradient
+      colors={['#4c669f', '#3b5998', '#192f6a']}
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} // Adjust this value as needed
-      >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.innerContainer}>
-
-          <Text style={styles.title}>PixEye</Text>
-          <Image
-            source={{ uri: safeUrlr }}
-            style={styles.image}
-          />
-          
-          <View style={styles.inputRow}>
-            <TextInput
-              style={styles.input}
-              placeholder="Character description"
-              onChangeText={text => setInputText(text)}
-              value={inputText}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="What animation"
-              onChangeText={text => setInputText2(text)}
-              value={inputText2}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Number of frames"
-              onChangeText={text => setInputText3(text)}
-              value={inputText3}
-            />
-          </View>
-          <Pressable onPress={onPress}>
-            <Text>Submit</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
-  );
-
-  async function onPress() {
-    console.log("Button pressed");
-    const response = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: "Draw a pure spritesheet without background, pixel style art, " + inputText + " , " + inputText2 + " , the spritesheet needs to have " + inputText3 + " frames of animation, which means drawing the character that amount of times",
-      n: 1,
-      size: "1024x1024",
-    });
-    var urlr = response.data[0]?.url || "";
-    setSafeUrlr(urlr);
+    >
+      <Text style={styles.title}>AniPix</Text>
       
-  }
-  
-}
+      <View style={styles.imageContainer}>
+        {imageUrl ? (
+          <Image source={{ uri: imageUrl }} style={styles.image} />
+        ) : (
+          <View style={styles.placeholderImage}>
+            <Text style={styles.placeholderText}>Your animation will appear here</Text>
+          </View>
+        )}
+      </View>
 
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Character description"
+          placeholderTextColor="#a0a0a0"
+          value={character}
+          onChangeText={setCharacter}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Action or animation"
+          placeholderTextColor="#a0a0a0"
+          value={action}
+          onChangeText={setAction}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Art style"
+          placeholderTextColor="#a0a0a0"
+          value={style}
+          onChangeText={setStyle}
+        />
+      </View>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleSubmit}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#ffffff" />
+        ) : (
+          <Text style={styles.buttonText}>Generate Animation</Text>
+        )}
+      </TouchableOpacity>
+    </LinearGradient>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  innerContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  inputRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-
-  containerRow: {
-    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 30,
+    fontFamily: 'Arial',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10
+  },
+  imageContainer: {
+    width: 300,
+    height: 300,
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginBottom: 30,
+    elevation: 5,
   },
   image: {
-    width: 256,
-    height: 256,
-    marginBottom: 50,
-    marginTop: 50,
+    width: '100%',
+    height: '100%',
+  },
+  placeholderImage: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholderText: {
+    color: '#ffffff',
+    textAlign: 'center',
+    padding: 10,
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: 20,
   },
   input: {
-    height: 40,
-    width: "80%",
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    marginBottom: 16,
-    textAlign: "center",
-
-    ... Platform.select({
-      web: {
-        width: "50%",
-      },
-      ios: {
-        width: "100%",
-      },
-      android: {
-        width: "100%",
-      },
-
-    }),
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
+    color: '#ffffff',
+    fontSize: 16,
   },
-  output: {
+  button: {
+    backgroundColor: '#ff6b6b',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    elevation: 3,
+  },
+  buttonText: {
+    color: '#ffffff',
     fontSize: 18,
+    fontWeight: 'bold',
   },
 });
-function OnPress() {
-  throw new Error("Function not implemented.");
-}
 
+export default AniPix;
