@@ -10,7 +10,7 @@ const AniPix = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const openai = new OpenAI({ apiKey: "sk-proj-iViW2Xd0tqtZV5PwWfGxT3BlbkFJ3Uy2pj3eueKQjROHYZmU", dangerouslyAllowBrowser: true});
+  const openai = new OpenAI({ apiKey: "i'll enter an .env file momentarily", dangerouslyAllowBrowser: true});
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -29,7 +29,7 @@ const AniPix = () => {
 
   return (
     <LinearGradient
-      colors={['#4c669f', '#3b5998', '#192f6a']}
+      colors={['#b3ccff', '#4d88ff', '#192f6a']}
       style={styles.container}
     >
       <Text style={styles.title}>AniPix</Text>
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#ff6b6b',
+    backgroundColor: '#99ccff',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 25,
